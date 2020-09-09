@@ -31,10 +31,7 @@
 module List :
     sig
 
-    type 'a t = 'a list
-#if OCAML >= 408
-    = [] | (::) of 'a * 'a list
-#endif
+  include module type of List
 
   (** {6 New functions} *)
 
@@ -225,48 +222,6 @@ module List :
   val filter : ('a -> bool) -> 'a list -> 'a list
   val find_all : ('a -> bool) -> 'a list -> 'a list
   val partition : ('a -> bool) -> 'a list -> 'a list * 'a list
-
-  (** {6 Older functions} *)
-
-  (** These functions are already part of the Ocaml standard library
-    and have not been modified. Please refer to the Ocaml Manual for
-    documentation. *)
-
-  val length : 'a list -> int
-  val rev_append : 'a list -> 'a list -> 'a list
-  val rev : 'a list -> 'a list
-  val rev_map : ('a -> 'b) -> 'a list -> 'b list
-  val iter : ('a -> unit) -> 'a list -> unit
-  val fold_left : ('b -> 'a -> 'b) -> 'b -> 'a list -> 'b
-  val for_all : ('a -> bool) -> 'a list -> bool
-  val exists : ('a -> bool) -> 'a list -> bool
-  val find : ('a -> bool) -> 'a list -> 'a
-
-  val mem : 'a -> 'a list -> bool
-  val memq : 'a -> 'a list -> bool
-  val assoc : 'a -> ('a * 'b) list -> 'b
-  val assq : 'a -> ('a * 'b) list -> 'b
-  val mem_assoc : 'a -> ('a * 'b) list -> bool
-  val mem_assq : 'a -> ('a * 'b) list -> bool
-
-
-  val stable_sort : ('a -> 'a -> int) -> 'a list -> 'a list
-  val fast_sort : ('a -> 'a -> int) -> 'a list -> 'a list
-  val merge : ('a -> 'a -> int) -> 'a list -> 'a list -> 'a list
-
-#if OCAML >= 402
-  val sort_uniq : ('a -> 'a -> int) -> 'a list -> 'a list
-  (** Same as {!List.sort}, but also remove duplicates.
-      @since 4.02.0 *)
-#endif
-
-#if OCAML >= 407
-  (** [*_seq] functions were introduced in OCaml 4.07.0, and are _not_ implemented in extlib for older OCaml versions *)
-  val to_seq : 'a list -> 'a Seq.t
-  val of_seq : 'a Seq.t -> 'a list
-#endif
-
-  val concat_map : ('a -> 'b list) -> 'a list -> 'b list
 
   (** {6 Exceptions} *)
 

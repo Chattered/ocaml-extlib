@@ -27,6 +27,8 @@ exception Invalid_string
 module String :
   sig
 
+  include module type of String
+
   (** {6 New Functions} *)
 
   val init : int -> (int -> char) -> string
@@ -168,56 +170,5 @@ module String :
   val uncapitalize_ascii : string -> string
 
   val split_on_char : char -> string -> string list
-
-  (** {6 Older Functions} *)
-
-  (** Please refer to the Ocaml Manual for documentation of these
-    functions. *)
-
-  val length : string -> int
-  val get : string -> int -> char
-  val set : Bytes.t -> int -> char -> unit
-  val create : int -> Bytes.t
-  val make : int -> char -> string
-  val copy : string -> string
-  val sub : string -> int -> int -> string
-  val fill : Bytes.t -> int -> int -> char -> unit
-  val blit : string -> int -> Bytes.t -> int -> int -> unit
-  val concat : string -> string list -> string
-  val iter : (char -> unit) -> string -> unit
-  val escaped : string -> string
-  val index : string -> char -> int
-  val index_opt : string -> char -> int option
-  val rindex : string -> char -> int
-  val rindex_opt : string -> char -> int option
-  val index_from : string -> int -> char -> int
-  val index_from_opt : string -> int -> char -> int option
-  val rindex_from : string -> int -> char -> int
-  val rindex_from_opt : string -> int -> char -> int option
-  val contains : string -> char -> bool
-  val contains_from : string -> int -> char -> bool
-  val rcontains_from : string -> int -> char -> bool
-  val uppercase : string -> string
-  val lowercase : string -> string
-  val capitalize : string -> string
-  val uncapitalize : string -> string
-
-  type t = string
-  val compare : t -> t -> int
-  val equal : t -> t -> bool
-
-#if OCAML >= 407
-  (** [*_seq] functions were introduced in OCaml 4.07.0, and are _not_ implemented in extlib for older OCaml versions *)
-  val to_seq : t -> char Seq.t
-  val to_seqi : t -> (int * char) Seq.t
-  val of_seq : char Seq.t -> t
-#endif
-
-  (**/**)
-
-  external unsafe_get : string -> int -> char = "%string_unsafe_get"
-  val unsafe_set : Bytes.t -> int -> char -> unit
-  val unsafe_blit : string -> int -> Bytes.t -> int -> int -> unit
-  val unsafe_fill : Bytes.t -> int -> int -> char -> unit
 
   end

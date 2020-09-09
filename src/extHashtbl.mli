@@ -24,6 +24,8 @@ module Hashtbl :
   (** The wrapper module *)
   sig
 
+  include module type of Hashtbl
+
   type ('a,'b) t = ('a,'b) Hashtbl.t
   (** The type of a hashtable. *)
 
@@ -90,128 +92,6 @@ module Hashtbl :
 #if OCAML >= 403
   val is_randomized : unit -> bool
   val filter_map_inplace : ('a -> 'b -> 'b option) -> ('a, 'b) t -> unit
-#endif
-
-  (** {6 Older Functions} *)
-
-  (** Please refer to the Ocaml Manual for documentation of these
-    functions. *)
-
-  (** @before 4.00.0 [random] is ignored *)
-  val create : ?random:bool -> int -> ('a, 'b) t
-  val clear : ('a, 'b) t -> unit
-  val add : ('a, 'b) t -> 'a -> 'b -> unit
-  val copy : ('a, 'b) t -> ('a, 'b) t
-  val find : ('a, 'b) t -> 'a -> 'b
-  val find_all : ('a, 'b) t -> 'a -> 'b list
-  val mem : ('a, 'b) t -> 'a -> bool
-  val remove : ('a, 'b) t -> 'a -> unit
-  val replace : ('a, 'b) t -> 'a -> 'b -> unit
-  val iter : ('a -> 'b -> unit) -> ('a, 'b) t -> unit
-  val fold : ('a -> 'b -> 'c -> 'c) -> ('a, 'b) t -> 'c -> 'c
-  val hash : 'a -> int
-  val hash_param : int -> int -> 'a -> int
-
-#if OCAML >= 407
-  (** [*_seq] functions were introduced in OCaml 4.07.0, and are _not_ implemented in extlib for older OCaml versions *)
-  val to_seq : ('a,'b) t -> ('a * 'b) Seq.t
-  val to_seq_keys : ('a,_) t -> 'a Seq.t
-  val to_seq_values : (_,'b) t -> 'b Seq.t
-  val add_seq : ('a,'b) t -> ('a * 'b) Seq.t -> unit
-  val replace_seq : ('a,'b) t -> ('a * 'b) Seq.t -> unit
-  val of_seq : ('a * 'b) Seq.t -> ('a, 'b) t
-#endif
-
-(** Functor interface forwards directly to stdlib implementation (i.e. no enum functions) *)
-
-#if OCAML >= 407
-
-module type HashedType = Hashtbl.HashedType
-module type S = Hashtbl.S
-module Make = Hashtbl.Make
-
-module type SeededHashedType = Hashtbl.SeededHashedType
-module type SeededS = Hashtbl.SeededS
-module MakeSeeded = Hashtbl.MakeSeeded
-
-#else
-
-module type HashedType =
-  sig
-    type t
-    val equal : t -> t -> bool
-    val hash : t -> int
-   end
-
-module type S =
-  sig
-    type key
-    type 'a t
-    val create : int -> 'a t
-    val clear : 'a t -> unit
-#if OCAML >= 400
-    val reset : 'a t -> unit
-#endif
-    val copy : 'a t -> 'a t
-    val add : 'a t -> key -> 'a -> unit
-    val remove : 'a t -> key -> unit
-    val find : 'a t -> key -> 'a
-#if OCAML >= 405
-    val find_opt : 'a t -> key -> 'a option
-#endif
-    val find_all : 'a t -> key -> 'a list
-    val replace : 'a t -> key -> 'a -> unit
-    val mem : 'a t -> key -> bool
-    val iter : (key -> 'a -> unit) -> 'a t -> unit
-#if OCAML >= 403
-    val filter_map_inplace: (key -> 'a -> 'a option) -> 'a t -> unit
-#endif
-    val fold : (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
-    val length : 'a t -> int
-#if OCAML >= 400
-    val stats: 'a t -> statistics
-#endif
-  end
-
-module Make (H : HashedType) : S with type key = H.t
-
-#if OCAML >= 400
-module type SeededHashedType =
-  sig
-    type t
-    val equal: t -> t -> bool
-    val hash: int -> t -> int
-  end
-
-module type SeededS =
-  sig
-    type key
-    type 'a t
-    val create : ?random:bool -> int -> 'a t
-    val clear : 'a t -> unit
-    val reset : 'a t -> unit
-    val copy : 'a t -> 'a t
-    val add : 'a t -> key -> 'a -> unit
-    val remove : 'a t -> key -> unit
-    val find : 'a t -> key -> 'a
-#if OCAML >= 405
-    val find_opt : 'a t -> key -> 'a option
-#endif
-    val find_all : 'a t -> key -> 'a list
-    val replace : 'a t -> key -> 'a -> unit
-    val mem : 'a t -> key -> bool
-    val iter : (key -> 'a -> unit) -> 'a t -> unit
-#if OCAML >= 403
-    val filter_map_inplace: (key -> 'a -> 'a option) -> 'a t -> unit
-#endif
-    val fold : (key -> 'a -> 'b -> 'b) -> 'a t -> 'b -> 'b
-    val length : 'a t -> int
-    val stats: 'a t -> statistics
-  end
-
-module MakeSeeded (H : SeededHashedType) : SeededS with type key = H.t
-#endif
-
 #endif
 
   end
